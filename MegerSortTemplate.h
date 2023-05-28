@@ -4,7 +4,17 @@ using namespace std;
 template <typename T, typename cmp = less<T&>>
 class MergeSort {
 public:
-    typedef void (*MergeCallback)(const size_t, const size_t, const size_t, const size_t, const size_t, const size_t, const vector<T>&);
+    struct CallbackInfomation {
+        size_t firstSegIndex;
+        size_t secondSegIndex;
+        size_t firstSegStart;
+        size_t firstSegEnd;
+        size_t secondSegStart;
+        size_t secondSegEnd;
+        CallbackInfomation(size_t fsi, size_t ssi, size_t fss, size_t fse, size_t sss, size_t sse) :
+            firstSegIndex(fsi), secondSegIndex(ssi), firstSegStart(fss), firstSegEnd(fse), secondSegStart(sss), secondSegEnd(sse) {}
+    };
+    typedef void (*MergeCallback)(CallbackInfomation&, const vector<T>&);
     MergeSort() : arr(new vector<T>()) {
         before_merge_first_segment_item = MergeSort::DoNothing;
         before_merge_second_segment_item = MergeSort::DoNothing;
@@ -48,7 +58,7 @@ private:
     MergeCallback before_merge_first_segment_item;
     cmp compare;
 
-    static void DoNothing(const size_t p1, const size_t p2, const size_t p3, const size_t p4, const size_t p5, const size_t p6, const vector<T>& arr) {}
+    static void DoNothing(CallbackInfomation &info, const vector<T>& arr) {}
 
     void _SortUtil(size_t start, size_t end) {
         if(start == end) {
@@ -62,11 +72,13 @@ private:
         size_t fi = start, si = startOfSec, ti = 0U;
         while(fi <= endOfFirst || si <= end) {
             if(si > end || (fi <= endOfFirst && compare((*arr)[fi], (*arr)[si]) == true)) {
-                before_merge_first_segment_item(fi, si, start, endOfFirst, startOfSec, end, *arr);
+                CallbackInfomation info(fi, si, start, endOfFirst, startOfSec, end);
+                before_merge_first_segment_item(info , *arr);
                 temp.push_back((*arr)[fi]);
                 fi++;
             } else {
-                before_merge_second_segment_item(fi, si, start, endOfFirst, startOfSec, end, *arr);
+                CallbackInfomation info(fi, si, start, endOfFirst, startOfSec, end);
+                before_merge_second_segment_item(info, *arr);
                 temp.push_back((*arr)[si]);
                 si++;
             }
