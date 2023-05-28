@@ -5,6 +5,7 @@ typename T must support the operator corresponding to the comparison function:<b
 - **operator >** if using std::greater compare
 - **operator <=** if using std::less_equal compare
 - **opreator >=** if using std::greater_equal compare
-- ...
-Merge sort often using for its sorting operation, not for its result. So callback function should be set.<br/><br/>
+- ...<br/><br/>
+
+Merge sort often using for its sorting operation, not for its result. So callback function should be set.<br/>
 Explaination for callback function comming soon.
